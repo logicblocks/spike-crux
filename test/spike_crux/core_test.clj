@@ -4,6 +4,10 @@
             [spike-crux.core :refer :all]
             [crux.api :as crux]))
 
+(defn equal? [this]
+  (fn [that]
+    (= this that)))
+
 (deftest create-user-test
   (testing "returns created user"
     (let [node (crux/start-node {})
@@ -19,13 +23,12 @@
           id :123
           user {:id         id
                 :first-name "Bob"
-                :last-name  "Andersson"}
-          equal-user? #(= user %)
-          _ (create-user node user)]
+                :last-name  "Andersson"}]
+      (create-user node user)
       (fact
         (fetch-user-by-id node id)
         =eventually=>
-        equal-user?))))
+        (equal? user)))))
 
 (deftest fetch-users-by-last-name-test
   (testing "returns single user"
@@ -36,14 +39,13 @@
                :last-name  last-name}
           ted {:id         :456
                :first-name "Ted"
-               :last-name  "Tedsson"}
-          equal-bob? #(= [bob] %)]
+               :last-name  "Tedsson"}]
       (create-user node bob)
       (create-user node ted)
       (fact
         (fetch-users-by-last-name node last-name)
         =eventually=>
-        equal-bob?)))
+        (equal? [bob]))))
 
   (testing "returns multiple users"
     (let [node (crux/start-node {})
@@ -53,11 +55,10 @@
                :last-name  last-name}
           ted {:id         :456
                :first-name "Ted"
-               :last-name  last-name}
-          equal-users? #(= [ted bob] %)]
+               :last-name  last-name}]
       (create-user node bob)
       (create-user node ted)
       (fact
         (fetch-users-by-last-name node last-name)
         =eventually=>
-        equal-users?))))
+        (equal? [ted bob])))))
