@@ -18,7 +18,7 @@
       (is (= user created-user)))))
 
 (deftest fetch-user-by-id-test
-  (testing "persists user"
+  (testing "returns user"
     (let [node (crux/start-node {})
           id :123
           user {:id         id
@@ -28,7 +28,12 @@
       (fact
         (fetch-user-by-id node id)
         =eventually=>
-        (equal? user)))))
+        (equal? user))))
+
+  (testing "returns nil if not valid"
+    (let [node (crux/start-node {})
+          id :123]
+      (is (nil? (fetch-user-by-id node id))))))
 
 (deftest create-user-sync-test
   (testing "persists user"
