@@ -18,8 +18,15 @@
     (crux/db)
     (crux/entity id)))
 
+(defn- submit-create-user [node user]
+  (crux/submit-tx node [[:crux.tx/put (set/rename-keys user {:id :crux.db/id})]]))
+
 (defn create-user [node user]
-  (crux/submit-tx node [[:crux.tx/put (set/rename-keys user {:id :crux.db/id})]])
+  (submit-create-user node user)
+  user)
+
+(defn create-user-sync [node user]
+  (crux/await-tx node (submit-create-user node user))
   user)
 
 (defn fetch-user-by-id [node id]

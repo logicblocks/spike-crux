@@ -30,6 +30,16 @@
         =eventually=>
         (equal? user)))))
 
+(deftest create-user-sync-test
+  (testing "persists user"
+    (let [node (crux/start-node {})
+          id :123
+          user {:id         id
+                :first-name "Bob"
+                :last-name  "Andersson"}]
+      (create-user-sync node user)
+      (is (= user (fetch-user-by-id node id))))))
+
 (deftest fetch-users-by-last-name-test
   (testing "returns single user"
     (let [node (crux/start-node {})
