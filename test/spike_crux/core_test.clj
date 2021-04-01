@@ -92,3 +92,11 @@
         (fetch-user-by-id node id)
         =eventually=>
         (equal? (assoc bob :email email))))))
+
+(deftest get-median-age-test
+  (testing "sets email property of "
+    (let [node (crux/start-node {})]
+      (create-user-sync node {:id :1 :age 20})
+      (create-user-sync node {:id :2 :age 25})
+      (create-user-sync node {:id :3 :age 58})
+      (is (= 25 (get-median-age node))))))

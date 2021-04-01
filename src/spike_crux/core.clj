@@ -55,3 +55,13 @@
                                                entity (crux.api/entity db eid)]
                                            [[:crux.tx/put (assoc entity :email mail)]]))}]])
   (crux/submit-tx node [[:crux.tx/fn :set-email id email]]))
+
+(defn get-median-age [node]
+  (->
+    node
+    (crux/db)
+    (crux/q
+      '{:find  [(median ?age)]
+        :where [[p :age ?age]]})
+    (first)
+    (first)))
