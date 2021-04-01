@@ -62,3 +62,18 @@
         (fetch-users-by-last-name node last-name)
         =eventually=>
         (equal? [ted bob])))))
+
+(deftest set-email-test
+  (testing "sets email property of "
+    (let [node (crux/start-node {})
+          id :123
+          email "bob.andersson@gmail.com"
+          bob {:id         id
+               :first-name "Bob"
+               :last-name  "Andersson"}]
+      (create-user node bob)
+      (set-email node id email)
+      (fact
+        (fetch-user-by-id node id)
+        =eventually=>
+        (equal? (assoc bob :email email))))))
